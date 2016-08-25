@@ -4,8 +4,8 @@
 # Contributor: Jakub Schmidtke <sjakub-at-gmail-dot-com>
 # Contributor: mosra <mosra@centrum.cz>
 
-pkgname=kdevplatform-git
-pkgver=4.90.92.r13476.aa23e36
+pkgname=kdevplatform
+pkgver=5.0.0
 pkgrel=1
 pkgdesc="A C/C++ development platform for KDE. (GIT Version)"
 arch=('i686' 'x86_64')
@@ -32,19 +32,19 @@ makedepends=('cmake'
              'kdoctools'
              'subversion'
              )
-conflicts=('kdevplatform')
-provides=('kdevplatform')
-source=('git://anongit.kde.org/kdevplatform')
+source=("git://anongit.kde.org/kdevplatform.git#tag=v${pkgver}")
 sha1sums=('SKIP')
-install=kdevplatform-git.install
+install=kdevplatform.install
 
 pkgver() {
-  cd kdevplatform
-  _ver="$(cat CMakeLists.txt | grep -m3 -e KDEVPLATFORM_VERSION_MAJOR -e KDEVPLATFORM_VERSION_MINOR -e KDEVPLATFORM_VERSION_PATCH | grep -o "[[:digit:]]*" | paste -sd'.')"
-  echo "${_ver}.r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+  cd "${srcdir}/${pkgname}"
+  git describe --tags `git rev-list --tags --max-count=1` | sed 's/v//g'
 }
 
 prepare() {
+  if [[ -d build ]]; then
+    rm -rf build
+  fi
   mkdir -p build
 }
 
